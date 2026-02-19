@@ -4,8 +4,8 @@
         {
             "previewLimit": 50,
             "driver": "SQLite",
-            "name": "Full Stack Testing",
-            "database": "data.db"
+            "name": "Users Connection",
+            "database": "fullstackusers/data.db"
         }
     ],
     "sqltools.useNodeRuntime": true
