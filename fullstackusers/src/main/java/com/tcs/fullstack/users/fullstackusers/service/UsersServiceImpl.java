@@ -34,7 +34,9 @@ public class UsersServiceImpl implements UsersService {
 
         usersRepository.save(userEntity);
 
-        throw new UnsupportedOperationException("Not supported yet.");
+        UserDto returnValue = modelMapper.map(userEntity, UserDto.class);
+
+        return returnValue;
     }
 
 }
