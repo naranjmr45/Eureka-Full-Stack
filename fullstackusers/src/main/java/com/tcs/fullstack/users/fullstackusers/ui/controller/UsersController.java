@@ -1,5 +1,7 @@
 package com.tcs.fullstack.users.fullstackusers.ui.controller;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,17 @@ public class UsersController {
     @GetMapping("/status/check")
     public String status() {
         return "Working on port " + env.getProperty("local.server.port");
+    }
+
+    @GetMapping()
+    public ResponseEntity<CreateUserResponseModel> getAllUsers() {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        List<UserDto> userList = usersService.getAllUsers();
+        CreateUserResponseModel returnValue = modelMapper.map(userList, CreateUserResponseModel.class);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(returnValue);
     }
 
     @PostMapping

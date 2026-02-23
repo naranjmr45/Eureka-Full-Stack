@@ -1,6 +1,7 @@
 package com.tcs.fullstack.users.fullstackusers.service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -64,9 +65,23 @@ public class UsersServiceImpl implements UsersService {
     public UserDto getUserDetailsByEmail(String email) {
         UserEntity userEntity = usersRepository.findByEmail(email);
 
-        if(userEntity == null) throw new UsernameNotFoundException(email);
-        
+        if (userEntity == null) {
+            throw new UsernameNotFoundException(email);
+        }
+
         return new ModelMapper().map(userEntity, UserDto.class);
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        List<UserEntity> userEntities = new ArrayList<>();
+        List<UserDto> users = new ArrayList<>();
+        usersRepository.findAll().forEach(userEntities::add);
+
+        for (int i = 0; i < userEntities.size(); i++) {
+            users.add(new ModelMapper().map(userEntities.get(i), UserDto.class));
+        }
+        return users;
     }
 
 }

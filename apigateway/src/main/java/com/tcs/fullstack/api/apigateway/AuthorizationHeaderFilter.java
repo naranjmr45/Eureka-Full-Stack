@@ -1,5 +1,7 @@
 package com.tcs.fullstack.api.apigateway;
 
+import java.util.Base64;
+
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             }
 
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-            String jwt = authorizationHeader.replace("Bearer", "");
+            String jwt = authorizationHeader.replace("Bearer ", "");
 
             if (!isJwtValid(jwt)) {
                 return onError(exchange, "JWT toke is not Valid", HttpStatus.UNAUTHORIZED);
@@ -64,7 +66,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private boolean isJwtValid(String jwt) {
         try {
             String tokenSecret = env.getProperty("token.secret");
-            byte[] secretKeyBytes = tokenSecret.getBytes();
+            byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
             SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
 
             String subject = Jwts.parser()

@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
@@ -47,11 +46,9 @@ public class WebSecurity {
         http.csrf((csrf) -> csrf.disable()); // Disables Cross Side Request Forgery Protections
 
         http.authorizeHttpRequests((authz) -> authz
-                .requestMatchers("/users/**").access(new WebExpressionAuthorizationManager("hasIpAddress('" + environment.getProperty("gateway.ip") + "')")) // Allows any user to send a request to this endpoint
-                .requestMatchers("/h2-console/**").permitAll()) // Allows us to access the sqlite database
+                .requestMatchers("/users/**").access(new WebExpressionAuthorizationManager("hasIpAddress('" + environment.getProperty("gateway.ip") + "')"))) // Allows any user to send a request to this endpoint)
                 .addFilter(authenticationFilter)
-                .authenticationManager(authenticationManager)
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Tells spring we are stateless
+                .authenticationManager(authenticationManager);
 
         http.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.sameOrigin())); // This is mainly for h2-console
 
