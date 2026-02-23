@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,5 +80,15 @@ public class UsersController {
         CreateUserResponseModel returnValue = modelMapper.map(createdUser, CreateUserResponseModel.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
+    }
+
+    @DeleteMapping(params = "email")
+    public ResponseEntity<CreateUserResponseModel> deleteUser(@RequestParam String email) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        UserDto userDetails = usersService.deleteUserByEmail(email);
+        CreateUserResponseModel returnValue = modelMapper.map(userDetails, CreateUserResponseModel.class);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
     }
 }

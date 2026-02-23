@@ -84,4 +84,17 @@ public class UsersServiceImpl implements UsersService {
         return users;
     }
 
+    @Override
+    public UserDto deleteUserByEmail(String email) {
+        UserEntity userEntity = usersRepository.findByEmail(email);
+
+        if (userEntity == null) {
+            throw new UsernameNotFoundException(email);
+        }
+
+        usersRepository.delete(userEntity);
+
+        return new ModelMapper().map(userEntity, UserDto.class);
+    }
+
 }
