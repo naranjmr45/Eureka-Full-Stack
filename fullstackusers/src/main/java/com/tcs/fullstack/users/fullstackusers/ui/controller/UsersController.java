@@ -1,5 +1,6 @@
 package com.tcs.fullstack.users.fullstackusers.ui.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tcs.fullstack.users.fullstackusers.service.UsersService;
@@ -37,15 +39,30 @@ public class UsersController {
         return "Working on port " + env.getProperty("local.server.port");
     }
 
+    @GetMapping(params = "email")
+    public ResponseEntity<CreateUserResponseModel> findByEmail(@RequestParam String email) {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        UserDto userDetails = usersService.getUserDetailsByEmail(email);
+        CreateUserResponseModel returnValue = modelMapper.map(userDetails, CreateUserResponseModel.class);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
+    }
+
     @GetMapping()
-    public ResponseEntity<CreateUserResponseModel> getAllUsers() {
+    public ResponseEntity<List<CreateUserResponseModel>> getAllUsers() {
 
         ModelMapper modelMapper = new ModelMapper();
 
         List<UserDto> userList = usersService.getAllUsers();
-        CreateUserResponseModel returnValue = modelMapper.map(userList, CreateUserResponseModel.class);
+        List<CreateUserResponseModel> returnValue = new ArrayList<>();
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(returnValue);
+        for (int i = 0; i < userList.size(); i++) {
+            returnValue.add(modelMapper.map(userList.get(i), CreateUserResponseModel.class));
+        }
+        
+        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
     }
 
     @PostMapping
