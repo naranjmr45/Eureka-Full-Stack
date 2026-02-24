@@ -1,16 +1,18 @@
 <template>
     <div>
         <AppHeader></AppHeader>
-        <h1>Table will go here</h1>
+        <UsersTable></UsersTable>
     </div>
 </template>
 
 <script>
 import AppHeader from './components/AppHeader.vue';
+import UsersTable from './components/UsersTable.vue';
 export default {
     name: 'App',
     components: {
-        AppHeader
+        AppHeader,
+        UsersTable
     }
 };
 </script>

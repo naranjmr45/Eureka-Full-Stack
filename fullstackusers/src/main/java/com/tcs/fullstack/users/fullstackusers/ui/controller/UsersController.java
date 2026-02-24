@@ -36,8 +36,8 @@ public class UsersController {
     UsersService usersService;
 
     @GetMapping("/status/check")
-    public String status() {
-        return "Working on port " + env.getProperty("local.server.port");
+    public ResponseEntity<String> status() {
+        return ResponseEntity.status(HttpStatus.OK).body("Working on port " + env.getProperty("local.server.port"));
     }
 
     @GetMapping(params = "email")
