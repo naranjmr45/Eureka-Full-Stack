@@ -40,9 +40,10 @@ const isLoading = ref(false)
 const onStatusCheck = async () => {
     isLoading.value = true
     try {
-        const response = await fetch('https://didactic-fiesta-5gpgwjjwrr4jh7rjg-8082.app.github.dev');
+        const response = await fetch('https://didactic-fiesta-5gpgwjjwrr4jh7rjg-8082.app.github.dev/users-ws/users/status/check');
         
         if (!response.ok) {
+            statusMessage.value = response.status + " error"
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
@@ -50,8 +51,6 @@ const onStatusCheck = async () => {
         const data = await response.text();
         
         statusMessage.value = data;
-        console.log("Backend Status:", data);
-        alert(`Status Check Successful: ${data}`);
         
     } catch (error) {
         console.error("Error connecting to Spring Boot:", error);
