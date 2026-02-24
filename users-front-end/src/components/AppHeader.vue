@@ -2,7 +2,8 @@
     <div class = "ui huge menu">
 
         <div class="ui input focus">
-            <input type="text" placeholder="Search...">
+            <input @keyup.enter = "findByEmail" type="text" placeholder="Search...">
+            {{ email }}
         </div>
 
         <div class = "item">
@@ -36,6 +37,27 @@ import { ref } from 'vue'
 // Use a ref to store the status if you want to display it in the UI later
 const statusMessage = ref('')
 const isLoading = ref(false)
+const email = ref('')
+
+const findByEmail = async (event) => {
+    try {
+        email.value = event.target.value
+        const baseUrl = 'https://didactic-fiesta-5gpgwjjwrr4jh7rjg-8082.app.github.dev/users-ws/users';
+        const response = await fetch(`${baseUrl}?email=${email.value}`);    
+
+        if (!response.ok) {
+            email.value = response.status + " error"
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.text();
+        
+        email.value = data;
+    } catch (error) {
+        email.value = "Error"
+        console.error(error);
+    }
+}
 
 const onStatusCheck = async () => {
     isLoading.value = true
@@ -53,6 +75,7 @@ const onStatusCheck = async () => {
         statusMessage.value = data;
         
     } catch (error) {
+        statusMessage.value = "Error"
         console.error("Error connecting to Spring Boot:", error);
     } finally {
         isLoading.value = false
