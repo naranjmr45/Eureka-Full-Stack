@@ -8,7 +8,7 @@
         <label>Password</label>
         <input type="text" required placeholder="Password" v-model="credentials.password">
     </div>
-    <button @click="authStore.login" class="ui button" type="submit">Login</button>
+    <button class="ui button" type="submit">Login</button>
     </form>
 </template>
 
@@ -19,8 +19,8 @@ import { reactive } from 'vue';
 const authStore = useAuth();
 
 const credentials = reactive({
-    email: '',
-    password: ''
+    email:'',
+    password:''
 })
 
 const handleLogin = () => {

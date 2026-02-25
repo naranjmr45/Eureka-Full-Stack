@@ -5,7 +5,7 @@
             <span>{{ userStore.emailData }}</span>
         </div>
 
-        <div v-if="authStore.isLoggedIn" class = "item">
+        <div class = "item">
             <a @click="userStore.onStatusCheck" 
             class="ui button" 
             :class="{ 'loading': userStore.isLoading }">
