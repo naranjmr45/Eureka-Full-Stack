@@ -8,6 +8,7 @@ export const useUserStore = defineStore('user', () => {
     const statusMessage = ref('')
     const isLoading = ref(false)
     const emailData = ref('') // Renamed slightly to avoid confusion with the search input
+    const users = ref('')
 
     // --- ACTIONS (Methods) ---
     
@@ -49,14 +50,37 @@ export const useUserStore = defineStore('user', () => {
             isLoading.value = false
         }
     }
+    
+    const getUsers = async () => {
+        try {
+            const response = await fetch(`${baseUrl}/users-ws/users`);
+            
+            if (!response.ok) {
+                users.value = response.status + " error"
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Use .text() since your Java backend returns a plain String
+            const data = await response.text();
+            
+            users.value = data;
+            
+        } catch (error) {
+            console.error("Error connecting to Spring Boot:", error);
+        } finally {
+            isLoading.value = false
+        }
+    }
 
     // --- THE "SECRET SAUCE" ---
     // You MUST return anything you want to access in your components
     return { 
         statusMessage, 
         isLoading, 
-        emailData, 
+        emailData,
+        users, 
         findByEmail, 
-        onStatusCheck 
+        onStatusCheck,
+        getUsers
     }
 })

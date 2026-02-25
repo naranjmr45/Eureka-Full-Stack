@@ -1,11 +1,11 @@
 <template>
     <div class = "item">
-            <a @click="getUsers" 
+            <a @click="userStore.getUsers" 
                class="ui button" 
-               :class="{ 'loading': isLoading }">
+               :class="{ 'loading': userStore.isLoading }">
                Get All Users
             </a>
-            {{ users }}
+            {{ userStore.users }}
         </div>
     <div>
         <table class = "ui celled table">
@@ -28,33 +28,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { useUserStore } from '@/store/useUserStore';
 
-// Use a ref to store the status if you want to display it in the UI later
-const users = ref('')
-const isLoading = ref(false)
-
-const getUsers = async () => {
-    isLoading.value = true
-    try {
-        const response = await fetch('https://didactic-fiesta-5gpgwjjwrr4jh7rjg-8082.app.github.dev/users-ws/users');
-        
-        if (!response.ok) {
-            users.value = response.status + " error"
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Use .text() since your Java backend returns a plain String
-        const data = await response.text();
-        
-        users.value = data;
-        
-    } catch (error) {
-        console.error("Error connecting to Spring Boot:", error);
-    } finally {
-        isLoading.value = false
-    }
-}
+const userStore = useUserStore();
 </script>
 
 <style scoped>
