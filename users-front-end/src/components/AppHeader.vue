@@ -24,12 +24,6 @@
 
         <div v-else class = "right menu">
             <div class = "item">
-                <a @click="authStore.login" class = "ui button">
-                    Login
-                </a>
-            </div>
-
-            <div class = "item">
                 <a class = "primary ui button">
                     Sign Up
                 </a>
