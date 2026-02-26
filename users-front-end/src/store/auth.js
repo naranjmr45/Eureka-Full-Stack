@@ -14,6 +14,21 @@ export const useAuth = defineStore('auth', () => {
             !token.value.includes('error');
     })
 
+    const signUp = async (credentials) => {
+        try {
+            const response = await api.post('/users-ws/users', credentials);
+
+            if (response.status != 201) {
+                console.log(response.status);
+                return;
+            }
+            console.log("Sign up worked: ", response.data)
+        } catch (error) {
+            console.error("Sign Up Failed", error);
+            alert("Sign Up Failed", error);
+        }
+    }
+
     const login = async (credentials) => {
         try {
             const response = await api.post(`/users-ws/users/login`, credentials);
@@ -46,6 +61,7 @@ export const useAuth = defineStore('auth', () => {
         token,
         isLoggedIn,
         login,
-        logout
+        logout,
+        signUp
     }
 })

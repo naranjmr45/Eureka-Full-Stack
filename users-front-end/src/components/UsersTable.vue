@@ -1,10 +1,11 @@
 <template>
-    <div class="item">
+    <div v-if="authStore.isLoggedIn" id="userTable">
+        <div class="item">
         <a @click="userStore.getUsers" class="ui button" :class="{ 'loading': userStore.isLoading }">
             Get All Users
         </a>
     </div>
-    <div>
+    <div id="userTable">
         <table class="ui celled table">
             <caption>Users</caption>
 
@@ -27,17 +28,25 @@
 
         </table>
     </div>
+    </div>
 </template>
 
 <script setup>
 import { useUserStore } from '@/store/useUserStore';
+import { useAuth } from '@/store/auth';
 
 const userStore = useUserStore();
+const authStore = useAuth();
 </script>
 
 <style scoped>
 caption {
     font-size: x-large;
     padding: 10px
+}
+
+.userTable {
+    display: flex;
+    justify-content: center;
 }
 </style>

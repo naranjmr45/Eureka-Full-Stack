@@ -51,7 +51,7 @@ export const useUserStore = defineStore('user', () => {
             const data = await response.data;
             statusMessage.value = data;
         } catch (error) {
-            statusMessage.value = "Error"
+            statusMessage.value = error
             console.error("Error connecting to Spring Boot:", error);
         } finally {
             isLoading.value = false

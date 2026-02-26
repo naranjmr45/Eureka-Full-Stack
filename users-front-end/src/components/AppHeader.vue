@@ -18,14 +18,6 @@
                 </a>
             </div>
         </div>
-
-        <div v-else class="right menu">
-            <div class="item">
-                <a class="primary ui button">
-                    Sign Up
-                </a>
-            </div>
-        </div>
     </div>
 </template>
 
