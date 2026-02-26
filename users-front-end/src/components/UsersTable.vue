@@ -5,10 +5,9 @@
                :class="{ 'loading': userStore.isLoading }">
                Get All Users
             </a>
-            {{ userStore.users }}
         </div>
     <div>
-        <table class = "ui celled table">
+        <table v-if="userStore.users.length" class = "ui celled table">
             <caption>Users</caption>
 
             <thead>
@@ -16,11 +15,16 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
-                    <th>Password</th>
+                    <th>UserId</th>
                 </tr>
             </thead>
             <tbody>
-
+                <tr v-for = "user in userStore.users" :key="user.email">
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.userId }}</td>
+                </tr>
             </tbody>
 
         </table>

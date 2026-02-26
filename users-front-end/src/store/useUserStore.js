@@ -9,7 +9,7 @@ export const useUserStore = defineStore('user', () => {
     const statusMessage = ref('')
     const isLoading = ref(false)
     const emailData = ref('') // Renamed slightly to avoid confusion with the search input
-    const users = ref('')
+    const users = ref([])
 
     // --- ACTIONS (Methods) ---
     
@@ -62,9 +62,8 @@ export const useUserStore = defineStore('user', () => {
             }
 
             // Use .text() since your Java backend returns a plain String
-            const data = await response.data;
-            
-            users.value = data;
+            users.value = response.data;
+            console.log(users.value)
             
         } catch (error) {
             console.error("Error connecting to Spring Boot:", error);
