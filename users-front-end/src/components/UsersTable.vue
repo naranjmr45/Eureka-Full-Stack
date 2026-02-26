@@ -1,13 +1,11 @@
 <template>
-    <div class = "item">
-            <a @click="userStore.getUsers" 
-               class="ui button" 
-               :class="{ 'loading': userStore.isLoading }">
-               Get All Users
-            </a>
-        </div>
+    <div class="item">
+        <a @click="userStore.getUsers" class="ui button" :class="{ 'loading': userStore.isLoading }">
+            Get All Users
+        </a>
+    </div>
     <div>
-        <table v-if="userStore.users.length" class = "ui celled table">
+        <table class="ui celled table">
             <caption>Users</caption>
 
             <thead>
@@ -19,7 +17,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for = "user in userStore.users" :key="user.email">
+                <tr v-for="user in userStore.users" :key="user.email">
                     <td>{{ user.firstName }}</td>
                     <td>{{ user.lastName }}</td>
                     <td>{{ user.email }}</td>
@@ -38,8 +36,8 @@ const userStore = useUserStore();
 </script>
 
 <style scoped>
-    caption {
-        font-size: x-large;
-        padding: 10px
-    }
+caption {
+    font-size: x-large;
+    padding: 10px
+}
 </style>

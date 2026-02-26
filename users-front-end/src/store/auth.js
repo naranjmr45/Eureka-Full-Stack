@@ -7,21 +7,21 @@ import api from '@/api'
 export const useAuth = defineStore('auth', () => {
     const token = ref('')
 
-    const isLoggedIn = computed(() => {        
+    const isLoggedIn = computed(() => {
         // Add "typeof" check to ensure it's a string before calling .includes
-        return token.value && 
-               typeof token.value === 'string' && 
-               !token.value.includes('error');
+        return token.value &&
+            typeof token.value === 'string' &&
+            !token.value.includes('error');
     })
 
     const login = async (credentials) => {
         try {
             const response = await api.post(`/users-ws/users/login`, credentials);
-            
-            
+
+
             // 1. Access the custom header
             // Note: Axios headers are usually lowercase
-            const receivedToken = response.headers['token']; 
+            const receivedToken = response.headers['token'];
 
             if (receivedToken) {
                 token.value = receivedToken;
@@ -33,7 +33,7 @@ export const useAuth = defineStore('auth', () => {
             }
         } catch (error) {
             console.error("Login failed", error);
-            token.value = 'error-network'; 
+            token.value = 'error-network';
             alert("Login Failed" + error)
         }
     }
@@ -43,7 +43,7 @@ export const useAuth = defineStore('auth', () => {
         token.value = ''
     }
     return {
-        token, 
+        token,
         isLoggedIn,
         login,
         logout
