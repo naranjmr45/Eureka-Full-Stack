@@ -22,8 +22,6 @@ export const useAuth = defineStore('auth', () => {
             // 1. Access the custom header
             // Note: Axios headers are usually lowercase
             const receivedToken = response.headers['token']; 
-            
-            console.log("Token from headers:", receivedToken);
 
             if (receivedToken) {
                 token.value = receivedToken;
@@ -36,6 +34,7 @@ export const useAuth = defineStore('auth', () => {
         } catch (error) {
             console.error("Login failed", error);
             token.value = 'error-network'; 
+            alert("Login Failed" + error)
         }
     }
 
