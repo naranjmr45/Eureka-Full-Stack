@@ -49,7 +49,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             String jwt = authorizationHeader.replace("Bearer ", "");
 
             if (!isJwtValid(jwt)) {
-                return onError(exchange, "JWT toke is not Valid", HttpStatus.UNAUTHORIZED);
+                return onError(exchange, "JWT token is not Valid", HttpStatus.UNAUTHORIZED);
             }
 
             return chain.filter(exchange); // Chain is the gateway filter chain

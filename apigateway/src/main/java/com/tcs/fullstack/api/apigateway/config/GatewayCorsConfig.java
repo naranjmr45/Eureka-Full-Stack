@@ -19,6 +19,7 @@ public class GatewayCorsConfig {
         config.setAllowedOrigins(Arrays.asList("https://didactic-fiesta-5gpgwjjwrr4jh7rjg-8080.app.github.dev"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
+        config.setExposedHeaders(Arrays.asList("token", "userid")); 
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 

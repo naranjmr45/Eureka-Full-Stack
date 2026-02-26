@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 
 import com.tcs.fullstack.users.fullstackusers.service.UsersService;
 
@@ -46,7 +45,7 @@ public class WebSecurity {
         http.csrf((csrf) -> csrf.disable()); // Disables Cross Side Request Forgery Protections
 
         http.authorizeHttpRequests((authz) -> authz
-                .requestMatchers("/users/**").access(new WebExpressionAuthorizationManager("hasIpAddress('" + environment.getProperty("gateway.ip") + "')"))) // Allows any user to send a request to this endpoint)
+                .requestMatchers("/users/**").permitAll())
                 .addFilter(authenticationFilter)
                 .authenticationManager(authenticationManager);
 

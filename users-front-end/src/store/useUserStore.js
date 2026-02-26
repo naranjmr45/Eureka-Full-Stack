@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import api from "@/api";
 
 const baseUrl = 'https://didactic-fiesta-5gpgwjjwrr4jh7rjg-8082.app.github.dev'
 
@@ -34,14 +35,14 @@ export const useUserStore = defineStore('user', () => {
     const onStatusCheck = async () => {
         isLoading.value = true
         try {
-            const response = await fetch(`${baseUrl}/users-ws/users/status/check`);
+            const response = await api.get(`/users-ws/users/status/check`);
             
-            if (!response.ok) {
+            if (response.status != 200) {
                 statusMessage.value = response.status + " error"
                 return;
             }
 
-            const data = await response.text();
+            const data = await response.data;
             statusMessage.value = data;
         } catch (error) {
             statusMessage.value = "Error"
@@ -53,15 +54,15 @@ export const useUserStore = defineStore('user', () => {
     
     const getUsers = async () => {
         try {
-            const response = await fetch(`${baseUrl}/users-ws/users`);
+            const response = await api.get(`/users-ws/users`);
             
-            if (!response.ok) {
+            if (response.status != 200) {
                 users.value = response.status + " error"
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             // Use .text() since your Java backend returns a plain String
-            const data = await response.text();
+            const data = await response.data;
             
             users.value = data;
             
