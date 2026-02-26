@@ -1,8 +1,7 @@
 <template>
     <div class="ui huge menu">
         <div v-if="authStore.isLoggedIn" class="ui input focus">
-            <input @keyup.enter="handleSearch" type="text" placeholder="Search...">
-            <span>{{ userStore.emailData }}</span>
+            <input v-model="userStore.searchQuery" type="text" placeholder="Search users...">
         </div>
 
         <div class="item">
@@ -38,9 +37,7 @@ const userStore = useUserStore();
 const authStore = useAuth();
 
 // This handles the UI event and passes the data to Pinia
-const handleSearch = (event) => {
-    userStore.findByEmail(event.target.value)
-}
+
 </script>
 
 <style scoped></style>

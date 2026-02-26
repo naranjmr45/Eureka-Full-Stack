@@ -15,7 +15,8 @@ export const useUserStore = defineStore('user', () => {
         const query = searchQuery.value.toLowerCase();
         return users.value.filter(user => 
             user.email.toLowerCase().includes(query) ||
-            user.firstName.toLowerCase().includes(query)
+            user.firstName.toLowerCase().includes(query) ||
+            user.lastName.toLowerCase().includes(query)
         );
     })
 
