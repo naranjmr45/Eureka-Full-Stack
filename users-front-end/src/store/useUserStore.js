@@ -77,6 +77,19 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
+    const deleteUser = async (emailValue) => {
+        try {
+            const response = await api.delete(`/users-ws/users?email=${emailValue}`);
+
+            if (response.status != 200) {
+                console.log(response.data);
+            }
+    
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     // --- THE "SECRET SAUCE" ---
     // You MUST return anything you want to access in your components
     return {
@@ -85,6 +98,7 @@ export const useUserStore = defineStore('user', () => {
         searchQuery,
         users,
         filteredUsers,
+        deleteUser,
         findByEmail,
         onStatusCheck,
         getUsers

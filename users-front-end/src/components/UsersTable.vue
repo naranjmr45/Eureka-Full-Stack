@@ -23,6 +23,9 @@
                     <td>{{ user.lastName }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.userId }}</td>
+                    <td>
+                        <button @click="confirmDelete(user)" class="ui red button">Delete</button>
+                    </td>
                 </tr>
             </tbody>
 
@@ -37,6 +40,14 @@ import { useAuth } from '@/store/auth';
 
 const userStore = useUserStore();
 const authStore = useAuth();
+
+const confirmDelete = (user) => {
+    const message = `Are you sure you want to delete ${user.firstName} (${user.email})?`;
+
+    if (window.confirm(message)) {
+        userStore.deleteUser(user.email);
+    }
+}
 </script>
 
 <style scoped>
