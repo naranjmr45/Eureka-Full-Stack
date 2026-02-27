@@ -1,58 +1,97 @@
 <template>
     <div v-if="authStore.isLoggedIn" id="userTable">
         <div class="item">
-        <a @click="userStore.getUsers" class="ui button" :class="{ 'loading': userStore.isLoading }">
-            Get All Users
-        </a>
-    </div>
-    <div id="userTable">
-        <table class="ui celled table">
-            <caption>Users</caption>
+            <a @click="userStore.getUsers" class="ui button" :class="{ 'loading': userStore.isLoading }">
+                Get All Users
+            </a>
+        </div>
+        <div id="userTable">
+            <table class="ui celled table">
+                <caption>Users</caption>
 
-            <thead>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>UserId</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="user in userStore.filteredUsers" :key="user.email">
-                    <td>{{ user.firstName }}</td>
-                    <td>{{ user.lastName }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.userId }}</td>
-                    <td>
-                        <button class="ui yellow button">Update</button>
-                    </td>
-                    <td>
-                        <button @click="confirmDelete(user)" class="ui red button">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>UserId</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="user in userStore.filteredUsers" :key="user.userId">
+                        <td>
+                            <div v-if="editingId === user.userId" class="ui input">
+                                <input v-model="editForm.firstName" type="text" />
+                            </div>
+                            <span v-else>{{ user.firstName }}</span>
+                        </td>
+                        <td>
+                            <div v-if="editingId === user.userId" class="ui input">
+                                <input v-model="editForm.lastName" type="text" />
+                            </div>
+                            <span v-else>{{ user.lastName }}</span>
+                        </td>
+                        <td>
+                            <div v-if="editingId === user.userId" class="ui input">
+                                <input v-model="editForm.email" type="text" />
+                            </div>
+                            <span v-else>{{ user.email }}</span>
+                        </td>
+                        <td>{{ user.userId }}</td>
+                        <!-- Actions -->
+                        <td>
+                            <div v-if="editingId === user.userId">
+                                <button @click="saveUpdate" class="ui green button mini">Update</button>
+                                <button @click="cancelEdit" class="ui basic button mini">Cancel</button>
+                            </div>
+                            <button v-else @click="startEdit(user)" class="ui yellow button">Edit</button>
+                        </td>
+                        <td>
+                            <button @click="confirmDelete(user)" class="ui red button">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
 
-        </table>
-    </div>
+            </table>
+        </div>
     </div>
 </template>
 
 <script setup>
 import { useUserStore } from '@/store/useUserStore';
 import { useAuth } from '@/store/auth';
-import { reactive } from 'vue';
+import { ref, reactive } from 'vue';
 
 const userStore = useUserStore();
 const authStore = useAuth();
 
-const updateCredentials = reactive({
+const editingId = ref(null);
+
+const editForm = reactive({
+    userId: '',
     firstName: '',
     lastName: '',
     email: ''
 })
 
-const updateUser = () => {
-    userStore.updateUser(updateCredentials)
+const startEdit = (user) => {
+    editingId.value = user.userId;
+
+    editForm.userId = user.userId;
+    editForm.firstName = user.firstName;
+    editForm.lastName = user.lastName;
+    editForm.email = user.email;
+}
+
+const cancelEdit = () => {
+    editingId.value = null;
+}
+
+const saveUpdate = async () => {
+    const success = await userStore.updateUser({ ...editForm })
+    if (success) {
+        editingId.value = null;
+    }
 }
 
 const confirmDelete = (user) => {

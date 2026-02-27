@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import api from "@/api";
-import axios from "axios";
 
 export const useUserStore = defineStore('user', () => {
     // --- STATE (Data) ---
@@ -96,18 +95,21 @@ export const useUserStore = defineStore('user', () => {
 
     const updateUser = async (credentials) => {
         try {
-            const response = await axios.patch('/users-ws/users');
+            const response = await api.patch('/users-ws/users', credentials);
 
-            if (response.status!=200) {
-                console.log(response.data);
-                return;
+            if (response.status===200) {
+                const index = users.value.findIndex(u => u.userId === credentials.userId);
+                if (index !== -1) {
+                    users.value[index] = {...users.value[index], ...credentials};
+                }
+                return true;
             }
         } catch (error) {  
-
+            console.error(error);
+            return false;
         }
     }
 
-    // --- THE "SECRET SAUCE" ---
     // You MUST return anything you want to access in your components
     return {
         statusMessage,
@@ -115,6 +117,7 @@ export const useUserStore = defineStore('user', () => {
         searchQuery,
         users,
         filteredUsers,
+        updateUser,
         deleteUser,
         findByEmail,
         onStatusCheck,
