@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import api from "@/api";
+import axios from "axios";
 
 export const useUserStore = defineStore('user', () => {
     // --- STATE (Data) ---
@@ -83,12 +84,26 @@ export const useUserStore = defineStore('user', () => {
 
             if (response.status != 200) {
                 console.log(response.data);
+                return;
             }
 
             users.value = users.value.filter(user => user.email !== emailValue);
     
         } catch (error) {
             console.error(error)
+        }
+    }
+
+    const updateUser = async (credentials) => {
+        try {
+            const response = await axios.patch('/users-ws/users');
+
+            if (response.status!=200) {
+                console.log(response.data);
+                return;
+            }
+        } catch (error) {  
+
         }
     }
 

@@ -24,6 +24,9 @@
                     <td>{{ user.email }}</td>
                     <td>{{ user.userId }}</td>
                     <td>
+                        <button class="ui yellow button">Update</button>
+                    </td>
+                    <td>
                         <button @click="confirmDelete(user)" class="ui red button">Delete</button>
                     </td>
                 </tr>
@@ -37,9 +40,20 @@
 <script setup>
 import { useUserStore } from '@/store/useUserStore';
 import { useAuth } from '@/store/auth';
+import { reactive } from 'vue';
 
 const userStore = useUserStore();
 const authStore = useAuth();
+
+const updateCredentials = reactive({
+    firstName: '',
+    lastName: '',
+    email: ''
+})
+
+const updateUser = () => {
+    userStore.updateUser(updateCredentials)
+}
 
 const confirmDelete = (user) => {
     const message = `Are you sure you want to delete ${user.firstName} (${user.email})?`;
