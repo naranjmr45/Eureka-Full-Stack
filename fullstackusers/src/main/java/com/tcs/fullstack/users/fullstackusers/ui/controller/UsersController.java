@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import com.tcs.fullstack.users.fullstackusers.service.UsersService;
 import com.tcs.fullstack.users.fullstackusers.shared.UserDto;
 import com.tcs.fullstack.users.fullstackusers.ui.model.CreateUserRequestModel;
 import com.tcs.fullstack.users.fullstackusers.ui.model.CreateUserResponseModel;
+import com.tcs.fullstack.users.fullstackusers.ui.model.UpdateUserRequestModel;
 
 import jakarta.validation.Valid;
 
@@ -80,6 +82,23 @@ public class UsersController {
         CreateUserResponseModel returnValue = modelMapper.map(createdUser, CreateUserResponseModel.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
+    }
+
+    @PatchMapping()
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserRequestModel userDetails) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
+        UserDto updatedUser = usersService.updateUser(userDto);
+
+        if (updatedUser != null) {
+            CreateUserResponseModel returnValue = modelMapper.map(updatedUser, CreateUserResponseModel.class);
+
+            return ResponseEntity.status(HttpStatus.OK).body(returnValue);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("UserId was not found");
     }
 
     @DeleteMapping(params = "email")

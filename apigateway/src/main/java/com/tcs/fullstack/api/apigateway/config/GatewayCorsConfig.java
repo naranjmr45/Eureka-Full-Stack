@@ -17,7 +17,7 @@ public class GatewayCorsConfig {
         
         // Remove the trailing slash from the origin URL
         config.setAllowedOrigins(Arrays.asList("https://didactic-fiesta-5gpgwjjwrr4jh7rjg-8080.app.github.dev"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setExposedHeaders(Arrays.asList("token", "userid")); 
         config.setAllowCredentials(true);

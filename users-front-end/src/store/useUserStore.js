@@ -84,6 +84,8 @@ export const useUserStore = defineStore('user', () => {
             if (response.status != 200) {
                 console.log(response.data);
             }
+
+            users.value = users.value.filter(user => user.email !== emailValue);
     
         } catch (error) {
             console.error(error)
