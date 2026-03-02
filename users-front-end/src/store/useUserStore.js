@@ -6,14 +6,14 @@ export const useUserStore = defineStore('user', () => {
     // --- STATE (Data) ---
     const statusMessage = ref('')
     const isLoading = ref(false)
-    const searchQuery = ref('') 
+    const searchQuery = ref('')
     const users = ref([])
 
     const filteredUsers = computed(() => {
-         if (!searchQuery.value) return users.value;
-        
+        if (!searchQuery.value) return users.value;
+
         const query = searchQuery.value.toLowerCase();
-        return users.value.filter(user => 
+        return users.value.filter(user =>
             user.email.toLowerCase().includes(query) ||
             user.firstName.toLowerCase().includes(query) ||
             user.lastName.toLowerCase().includes(query)
@@ -87,7 +87,7 @@ export const useUserStore = defineStore('user', () => {
             }
 
             users.value = users.value.filter(user => user.email !== emailValue);
-    
+
         } catch (error) {
             console.error(error)
         }
@@ -97,14 +97,14 @@ export const useUserStore = defineStore('user', () => {
         try {
             const response = await api.patch('/users-ws/users', credentials);
 
-            if (response.status===200) {
+            if (response.status === 200) {
                 const index = users.value.findIndex(u => u.userId === credentials.userId);
                 if (index !== -1) {
-                    users.value[index] = {...users.value[index], ...credentials};
+                    users.value[index] = { ...users.value[index], ...credentials };
                 }
                 return true;
             }
-        } catch (error) {  
+        } catch (error) {
             console.error(error);
             return false;
         }
