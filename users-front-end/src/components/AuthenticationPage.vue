@@ -13,7 +13,7 @@
 
     <h3 v-if="!authStore.isLoggedIn">Create An Account</h3>
 
-    <UserForm v-if="!authStore.isLoggedIn" button-text="Sign Up" @submit="authStore.signUp" />
+    <UserForm v-if="!authStore.isLoggedIn" button-text="Sign Up" @submit="(userData) => authStore.signUp(userData)"  />
 </template>
 
 <script setup>

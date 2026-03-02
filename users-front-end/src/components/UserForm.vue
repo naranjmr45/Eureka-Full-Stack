@@ -23,9 +23,13 @@
 <script setup>
 import { reactive } from 'vue';
 
-
-const props = defineProps(['buttonText']);
-const emits = defineEmits(['handleSubmit']);
+defineProps({
+    buttonText: {
+        type: String,
+        default: 'Submit'
+    }
+});
+const emit = defineEmits(['submit']);
 
 const formData = reactive({
     firstName: '',
