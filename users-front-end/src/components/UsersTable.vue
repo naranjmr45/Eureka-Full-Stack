@@ -1,9 +1,16 @@
 <template>
     <div v-if="authStore.isLoggedIn" id="userTable">
-        <div class="item">
-            <a @click="userStore.getUsers" class="ui button" :class="{ 'loading': userStore.isLoading }">
-                Get All Users
-            </a>
+        <div class="ui menu">
+            <div class="item">
+                <a @click="userStore.getUsers" class="ui button" :class="{ 'loading': userStore.isLoading }">
+                    Get All Users
+                </a>
+            </div>
+            <div class="right menu">
+                <a class="ui button">
+                    Create User
+                </a>
+            </div>
         </div>
         <div id="userTable">
             <table class="ui celled table">
