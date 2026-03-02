@@ -54,10 +54,17 @@ const signUpCredentials = reactive({
 
 const handleLogin = () => {
     authStore.login(loginCredentials)
+    loginCredentials.email = '';
+    loginCredentials.password = '';
 }
 
 const handleSignUp = () => {
-    authStore.signUp(signUpCredentials)
+    authStore.signUp(signUpCredentials);
+
+    signUpCredentials.firstName = '';
+    signUpCredentials.lastName = '';
+    signUpCredentials.email = '';
+    signUpCredentials.password = '';
 }
 
 </script>
