@@ -69,12 +69,17 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
             SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
 
-            String subject = Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(jwt)
-                    .getPayload()
-                    .getSubject();
+            String subject = null;
+            try {
+                subject = Jwts.parser()
+                        .verifyWith(secretKey)
+                        .build()
+                        .parseSignedClaims(jwt)
+                        .getPayload()
+                        .getSubject();
+            } catch (Exception e) {
+                return false;
+            }
 
             return subject != null && !subject.isEmpty();
         } catch (Exception ex) {

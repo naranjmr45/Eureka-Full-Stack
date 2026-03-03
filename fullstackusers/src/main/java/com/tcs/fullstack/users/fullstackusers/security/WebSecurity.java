@@ -45,6 +45,7 @@ public class WebSecurity {
         http.csrf((csrf) -> csrf.disable()); // Disables Cross Side Request Forgery Protections
 
         http.authorizeHttpRequests((authz) -> authz
+                .requestMatchers("/login").permitAll()
                 .requestMatchers("/users/**").permitAll())
                 .addFilter(authenticationFilter)
                 .authenticationManager(authenticationManager);
