@@ -40,8 +40,7 @@ export const useAuth = defineStore('auth', () => {
 
             if (receivedToken) {
                 token.value = receivedToken;
-                // If you need the userId too:
-                // const userId = response.headers['userid'];
+                localStorage.setItem('user-token', receivedToken)
             } else {
                 console.warn("Response received, but 'token' header was missing.");
                 token.value = 'error-no-token-header';
@@ -56,6 +55,8 @@ export const useAuth = defineStore('auth', () => {
 
     const logout = () => {
         token.value = ''
+        localStorage.removeItem('user-token');
+        window.location.href = '/login';
     }
     return {
         token,
