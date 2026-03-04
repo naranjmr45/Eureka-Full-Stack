@@ -11,8 +11,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="authorities")
-public class AuthorityEntity implements Serializable{
+@Table(name = "authorities")
+public class AuthorityEntity implements Serializable {
 
     private static final long serialVersionUID = 280268163811771415L;
 
@@ -20,11 +20,19 @@ public class AuthorityEntity implements Serializable{
     @GeneratedValue
     private long id;
 
-    @Column(nullable=false, length=20)
+    @Column(nullable = false, length = 20)
     private String name;
 
-    @ManyToMany(mappedBy="authorities")
+    @ManyToMany(mappedBy = "authorities")
     private Collection<RoleEntity> roles;
+
+    public AuthorityEntity() {
+
+    }
+
+    public AuthorityEntity(String name) {
+        this.name = name;
+    }
 
     public long getId() {
         return id;
