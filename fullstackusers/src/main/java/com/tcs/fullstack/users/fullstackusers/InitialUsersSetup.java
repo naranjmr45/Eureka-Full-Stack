@@ -19,7 +19,6 @@ import com.tcs.fullstack.users.fullstackusers.data.UserEntity;
 import com.tcs.fullstack.users.fullstackusers.data.UsersRepository;
 import com.tcs.fullstack.users.fullstackusers.shared.Roles;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 
 @Component

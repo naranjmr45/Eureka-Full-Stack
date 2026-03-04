@@ -1,6 +1,8 @@
 package com.tcs.fullstack.users.fullstackusers.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,12 +15,25 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tcs.fullstack.users.fullstackusers.data.AuthorityEntity;
+import com.tcs.fullstack.users.fullstackusers.data.AuthorityRepository;
+import com.tcs.fullstack.users.fullstackusers.data.RoleEntity;
+import com.tcs.fullstack.users.fullstackusers.data.RoleRepository;
 import com.tcs.fullstack.users.fullstackusers.data.UserEntity;
 import com.tcs.fullstack.users.fullstackusers.data.UsersRepository;
+import com.tcs.fullstack.users.fullstackusers.shared.Roles;
 import com.tcs.fullstack.users.fullstackusers.shared.UserDto;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UsersServiceImpl implements UsersService {
+
+    @Autowired
+    AuthorityRepository authorityRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     UsersRepository usersRepository;
 
@@ -43,6 +58,36 @@ public class UsersServiceImpl implements UsersService {
         // Makes it so the userEntity and userDetails have the exact same fields to map
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         UserEntity userEntity = modelMapper.map(userDetails, UserEntity.class);
+
+        usersRepository.save(userEntity);
+
+        UserDto returnValue = modelMapper.map(userEntity, UserDto.class);
+
+        return returnValue;
+    }
+
+    @Override
+    public UserDto createAdmin(UserDto userDetails) {
+
+        userDetails.setUserId(UUID.randomUUID().toString());
+        userDetails.setEncryptedPassword(
+                bCryptPasswordEncoder.encode(userDetails.getPassword()));
+        
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        // Makes it so the userEntity and userDetails have the exact same fields to map
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        UserEntity userEntity = modelMapper.map(userDetails, UserEntity.class);
+
+        AuthorityEntity readAuthority = createAuthority("READ");
+        AuthorityEntity writeAuthority = createAuthority("WRITE");
+        AuthorityEntity deleteAuthority = createAuthority("DELETE");
+
+        createRole(Roles.ROLE_USER.name(), Arrays.asList(readAuthority, writeAuthority));
+        RoleEntity roleAdmin = createRole(Roles.ROLE_ADMIN.name(), Arrays.asList(readAuthority, writeAuthority, deleteAuthority));
+
+        userEntity.setRoles(Arrays.asList(roleAdmin));
 
         usersRepository.save(userEntity);
 
@@ -114,6 +159,32 @@ public class UsersServiceImpl implements UsersService {
         usersRepository.delete(userEntity);
 
         return new ModelMapper().map(userEntity, UserDto.class);
+    }
+
+    @Transactional
+    private AuthorityEntity createAuthority(String name) {
+
+        AuthorityEntity authority = authorityRepository.findByName(name);
+
+        if(authority == null) {
+            authority = new AuthorityEntity(name);
+            authorityRepository.save(authority);
+        }
+
+        return authority;
+    }
+
+    @Transactional
+    private RoleEntity createRole(String name, Collection<AuthorityEntity> authorities) {
+
+        RoleEntity role = roleRepository.findByName(name);
+
+        if(role == null) {
+            role = new RoleEntity(name, authorities);
+            roleRepository.save(role);
+        }
+
+        return role;
     }
 
 }

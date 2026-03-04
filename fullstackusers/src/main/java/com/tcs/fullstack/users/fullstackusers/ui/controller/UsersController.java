@@ -84,6 +84,21 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
     }
 
+    @PostMapping()
+    public ResponseEntity<CreateUserResponseModel> createAdmin(@Valid @RequestBody CreateUserRequestModel userDetails) {
+        
+        ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
+        UserDto createdAdmin = usersService.createAdmin(userDto);
+
+        CreateUserResponseModel returnValue = modelMapper.map(createdAdmin, CreateUserResponseModel.class);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
+    }
+
     @PatchMapping()
     public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserRequestModel userDetails) {
         ModelMapper modelMapper = new ModelMapper();

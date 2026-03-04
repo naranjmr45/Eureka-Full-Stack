@@ -12,4 +12,5 @@ public interface UsersService extends UserDetailsService {
     UserDto updateUser(UserDto userDetails);
     UserDto deleteUserByEmail(String email);
     List<UserDto> getAllUsers();
+    UserDto createAdmin(UserDto userDetails);
 }
