@@ -59,6 +59,13 @@ public class UsersServiceImpl implements UsersService {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         UserEntity userEntity = modelMapper.map(userDetails, UserEntity.class);
 
+        AuthorityEntity readAuthority = createAuthority("READ");
+        AuthorityEntity writeAuthority = createAuthority("WRITE");
+
+        RoleEntity roleUser = createRole(Roles.ROLE_USER.name(), Arrays.asList(readAuthority, writeAuthority));
+
+        userEntity.setRoles(Arrays.asList(roleUser));
+
         usersRepository.save(userEntity);
 
         UserDto returnValue = modelMapper.map(userEntity, UserDto.class);
@@ -84,7 +91,6 @@ public class UsersServiceImpl implements UsersService {
         AuthorityEntity writeAuthority = createAuthority("WRITE");
         AuthorityEntity deleteAuthority = createAuthority("DELETE");
 
-        createRole(Roles.ROLE_USER.name(), Arrays.asList(readAuthority, writeAuthority));
         RoleEntity roleAdmin = createRole(Roles.ROLE_ADMIN.name(), Arrays.asList(readAuthority, writeAuthority, deleteAuthority));
 
         userEntity.setRoles(Arrays.asList(roleAdmin));

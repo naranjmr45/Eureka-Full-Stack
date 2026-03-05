@@ -1,1 +1,1 @@
-SELECT * FROM HTE_roles
+SELECT * FROM users_roles
