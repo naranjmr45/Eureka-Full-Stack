@@ -31,7 +31,7 @@ public class JwtClaimsParser {
         byte[] secretKeyBytes = Base64.getEncoder().encode(secretToken.getBytes());
         SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
 
-        JwtParser jwtParser = Jwts.parser().setSigningKey(secretKey).build();
+        JwtParser jwtParser = Jwts.parser().verifyWith(secretKey).build();
 
         return jwtParser.parse(jwtString);
     }

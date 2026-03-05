@@ -159,6 +159,17 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+	public UserDto getUserDetailsByUserId(String userId) {
+		UserEntity userEntity = usersRepository.findByUserId(userId);
+
+        if (userEntity == null) {
+            throw new UsernameNotFoundException(userId);
+        }
+
+        return new ModelMapper().map(userEntity, UserDto.class);
+	}
+
+    @Override
     public List<UserDto> getAllUsers() {
         List<UserEntity> userEntities = new ArrayList<>();
         List<UserDto> users = new ArrayList<>();

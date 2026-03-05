@@ -8,7 +8,8 @@
             "mainClass": "com.tcs.fullstack.api.apigateway.ApigatewayApplication",
             "projectName": "apigateway",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=38709 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=apigateway"
         },
         {
             "type": "java",
@@ -27,6 +28,17 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.tcs.fullstack.discovery.fullstackdiscovery.FullstackdiscoveryApplication",
             "projectName": "fullstackdiscovery",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=37605 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=fullstackdiscovery"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-JwtauthoritiesApplication<jwtauthorities>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.tcs.jwtauthorities.JwtauthoritiesApplication",
+            "projectName": "jwtauthorities",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
