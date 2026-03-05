@@ -12,9 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -29,6 +26,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     public AuthorizationFilter(AuthenticationManager authenticationManager, Environment environment) {
         super(authenticationManager);
+        this.environment = environment;
     }
 
     @Override
