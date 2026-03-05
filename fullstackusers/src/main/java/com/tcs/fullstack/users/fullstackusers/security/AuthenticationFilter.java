@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
@@ -13,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -69,9 +72,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
         SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
 
+        List<String> authorities = auth.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList());
+
         Instant now = Instant.now();
 
         String token = Jwts.builder()
+                .claim("scope", authorities) // A claim is a piece info we want to share between services (a statement about the user)
                 .subject(userDetails.getUserId())
                 .expiration(Date.from(now
                         .plusMillis(Long.parseLong(environment.getProperty("token.expiration_time")))))

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -127,8 +129,22 @@ public class UsersServiceImpl implements UsersService {
         if (userEntity == null) {
             throw new UsernameNotFoundException(username);
         }
+
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        Collection<RoleEntity> roles = userEntity.getRoles();
+
+        roles.forEach((role) -> {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+
+            Collection<AuthorityEntity> authorityEntities = role.getAuthorities();
+            authorityEntities.forEach((authorityEntity) -> {
+                authorities.add(new SimpleGrantedAuthority(authorityEntity.getName()));
+            });
+        });
+
         return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(),
-                true, true, true, true, new ArrayList<>());
+                true, true, true, true, 
+                authorities);
     }
 
     @Override
