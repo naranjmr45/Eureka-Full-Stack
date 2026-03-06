@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,6 +100,7 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin")
     public ResponseEntity<CreateUserResponseModel> createAdmin(@Valid @RequestBody CreateUserRequestModel userDetails) {
         
@@ -116,6 +116,7 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or principal == #userId")
     @PatchMapping()
     public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserRequestModel userDetails) {
         ModelMapper modelMapper = new ModelMapper();
