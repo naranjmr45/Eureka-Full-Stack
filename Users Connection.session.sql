@@ -1,1 +1,1 @@
-SELECT * FROM users_roles
+SELECT * FROM users

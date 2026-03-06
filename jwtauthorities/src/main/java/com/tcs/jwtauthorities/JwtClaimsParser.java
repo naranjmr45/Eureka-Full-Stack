@@ -37,7 +37,7 @@ public class JwtClaimsParser {
     }
 
     public Collection<? extends GrantedAuthority> getUserAuthorities() {
-        Collection<Map<String, String>> scopes = ((Claims) jwtObject.getBody()).get("scope", List.class);
+        Collection<Map<String, String>> scopes = ((Claims) jwtObject.getPayload()).get("scope", List.class);
 
         return scopes.stream()
                 .map(scopeMap -> new SimpleGrantedAuthority(scopeMap.get("authority")))
@@ -46,6 +46,6 @@ public class JwtClaimsParser {
     }
 
     public String getJwtSubject() {
-        return ((Claims)jwtObject.getBody()).getSubject();
+        return ((Claims)jwtObject.getPayload()).getSubject();
     }
 }
