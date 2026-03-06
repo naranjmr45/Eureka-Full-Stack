@@ -24,7 +24,7 @@ public class JwtClaimsParser {
     Jwt<?, ?> jwtObject;
 
     public JwtClaimsParser(String jwt, String secretToken) {
-        parseJwt(jwt, secretToken);
+        this.jwtObject = parseJwt(jwt, secretToken);
     }
 
     Jwt<?, ?> parseJwt(String jwtString, String secretToken) {
@@ -37,10 +37,10 @@ public class JwtClaimsParser {
     }
 
     public Collection<? extends GrantedAuthority> getUserAuthorities() {
-        Collection<Map<String, String>> scopes = ((Claims) jwtObject.getPayload()).get("scope", List.class);
+        List<String> scopes = ((Claims) jwtObject.getPayload()).get("scope", List.class);
 
         return scopes.stream()
-                .map(scopeMap -> new SimpleGrantedAuthority(scopeMap.get("authority")))
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
     }

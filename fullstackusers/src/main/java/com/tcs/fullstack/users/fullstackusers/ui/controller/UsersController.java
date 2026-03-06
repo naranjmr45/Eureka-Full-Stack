@@ -57,8 +57,9 @@ public class UsersController {
     }
 
     @GetMapping("/{userId}")
+    //@PreAuthorize("hasRole('ADMIN') or principal == #userId")
     //@PreAuthorize("principal == #userId")
-    @PostAuthorize("principal == returnObject.body.userId()")
+    //@PostAuthorize("principal == returnObject.body.userId()")
     public ResponseEntity<CreateUserResponseModel> findByUserId(@PathVariable String userId) {
 
         ModelMapper modelMapper = new ModelMapper();
@@ -132,6 +133,7 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("UserId was not found");
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('PROFILE_DELETE') or principal == #userId")
     @DeleteMapping(params = "email")
     public ResponseEntity<CreateUserResponseModel> deleteUser(@RequestParam String email) {
         ModelMapper modelMapper = new ModelMapper();

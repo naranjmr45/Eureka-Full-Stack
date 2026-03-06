@@ -12,9 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import com.tcs.jwtauthorities.JwtClaimsParser;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,17 +61,13 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
             return null;
         }
 
-        byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
-        SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
-
-        JwtParser jwtParser = Jwts.parser().verifyWith(secretKey).build();
-
-        String userId = jwtParser.parseSignedClaims(token).getPayload().getSubject();
+        JwtClaimsParser jwtClaimsParser = new JwtClaimsParser(token, tokenSecret);
+        String userId = jwtClaimsParser.getJwtSubject();
 
         if (userId == null) {
             return null;
         }
 
-        return new UsernamePasswordAuthenticationToken(userId, null, new ArrayList<>());
+        return new UsernamePasswordAuthenticationToken(userId, null, jwtClaimsParser.getUserAuthorities());
     }
 }
