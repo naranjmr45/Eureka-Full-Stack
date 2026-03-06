@@ -2,16 +2,38 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import api from '@/api'
 
-//const baseUrl = 'https://didactic-fiesta-5gpgwjjwrr4jh7rjg-8082.app.github.dev'
+const decodeJwt = (token) => {
+  try {
+    // Get the payload (index 1) and decode it
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(window.atob(base64));
+  } catch (e) {
+    return null;
+  }
+};
 
 export const useAuth = defineStore('auth', () => {
-    const token = ref('')
+    const token = ref(localStorage.getItem('user-token') || '')
+
+    const payload = computed(() => {
+        if (!token.value) return null;
+        return decodeJwt(token.value);
+    })
 
     const isLoggedIn = computed(() => {
         // Add "typeof" check to ensure it's a string before calling .includes
         return token.value &&
             typeof token.value === 'string' &&
             !token.value.includes('error');
+    })
+
+    const isAdmin = computed(() => {
+        return payload.value?.scope?.includes('ROLE_ADMIN') || false;
+    })
+
+    const userId = computed(() => {
+        return payload.value?.sub || null;
     })
 
     const signUp = async (credentials) => {
@@ -61,6 +83,8 @@ export const useAuth = defineStore('auth', () => {
     return {
         token,
         isLoggedIn,
+        isAdmin,
+        userId,
         login,
         logout,
         signUp

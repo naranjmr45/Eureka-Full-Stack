@@ -6,7 +6,7 @@
                     Get All Users
                 </a>
             </div>
-            <div class="right menu">
+            <div v-if="authStore.isAdmin" class="right menu">
                 <button @click="showCreateForm = !showCreateForm" class="ui button">
                     {{ showCreateForm ? 'Cancel' : 'Create User' }}
                 </button>

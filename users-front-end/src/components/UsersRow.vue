@@ -26,16 +26,19 @@
                 <button @click="handleSave" class="ui green button mini">Save</button>
                 <button @click="isEditing = false" class="ui blue button mini">Cancel</button>
             </div>
-            <button v-else @click="isEditing = true" class="ui blue button">Edit</button>
+            <button v-else-if="canEdit" @click="isEditing = true" class="ui blue button">Edit</button>
         </td>
         <td>
-            <button @click="$emit('delete', user)" class="ui red button">Delete</button>
+            <button v-if="authStore.isAdmin" @click="$emit('delete', user)" class="ui red button">Delete</button>
         </td>
     </tr>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
+import { useAuth } from '@/store/auth';
+
+const authStore = useAuth();
 
 const props = defineProps(['user']);
 const emit = defineEmits(['update', 'delete']);
@@ -47,4 +50,8 @@ const handleSave = () => {
     emit('update', { ...editForm });
     isEditing.value = false;
 }
+
+const canEdit = computed(() => {
+    return authStore.isAdmin || authStore.userId === props.user.userId;
+})
 </script>
