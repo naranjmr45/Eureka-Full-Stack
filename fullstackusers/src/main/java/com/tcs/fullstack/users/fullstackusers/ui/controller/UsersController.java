@@ -116,7 +116,7 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or principal == #userId")
+    @PreAuthorize("hasRole('ADMIN') or principal == #userDetails.getUserId()")
     @PatchMapping()
     public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserRequestModel userDetails) {
         ModelMapper modelMapper = new ModelMapper();

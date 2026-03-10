@@ -52,7 +52,8 @@ public class WebSecurity {
 
         http.authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/login").permitAll()
-                .requestMatchers("/users/**").permitAll())
+                .requestMatchers("/users").permitAll()
+                .requestMatchers("/users/**").authenticated())
                 .addFilter(new AuthorizationFilter(authenticationManager, environment))
                 .addFilter(authenticationFilter)
                 .authenticationManager(authenticationManager);
