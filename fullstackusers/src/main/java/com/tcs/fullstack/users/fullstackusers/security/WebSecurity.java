@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.tcs.fullstack.users.fullstackusers.exceptions.CustomAccessDeniedHandler;
+import com.tcs.fullstack.users.fullstackusers.exceptions.CustomAuthenticationEntryPoint;
 import com.tcs.fullstack.users.fullstackusers.service.UsersService;
 
 @EnableMethodSecurity(prePostEnabled=true)
@@ -57,7 +59,10 @@ public class WebSecurity {
                 .requestMatchers("/users/**").authenticated())
                 .addFilter(new AuthorizationFilter(authenticationManager, environment))
                 .addFilter(authenticationFilter)
-                .authenticationManager(authenticationManager);
+                .authenticationManager(authenticationManager)
+                .exceptionHandling(exception -> exception
+                    .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                    .accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         http.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.sameOrigin())); // This is mainly for h2-console
 

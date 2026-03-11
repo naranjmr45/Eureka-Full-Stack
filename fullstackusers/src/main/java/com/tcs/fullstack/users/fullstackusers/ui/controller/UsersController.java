@@ -56,7 +56,7 @@ public class UsersController {
     }
 
     @GetMapping("/{userId}")
-    //@PreAuthorize("hasRole('ADMIN') or principal == #userId")
+    @PreAuthorize("hasRole('ADMIN') or principal == #userId")
     //@PreAuthorize("principal == #userId")
     //@PostAuthorize("principal == returnObject.body.userId()")
     public ResponseEntity<CreateUserResponseModel> findByUserId(@PathVariable String userId) {

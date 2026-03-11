@@ -8,6 +8,9 @@ import javax.crypto.SecretKey;
 
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -30,12 +33,12 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req,
-            HttpServletResponse res, FilterChain chain) 
+            HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        
+
         String authorizationHeader = req.getHeader(environment.getProperty("authorization.token.header.name"));
 
-        if (authorizationHeader == null 
+        if (authorizationHeader == null
                 || !authorizationHeader.startsWith(environment.getProperty("authorization.token.header.prefix"))) {
             chain.doFilter(req, res);
             return;
@@ -51,23 +54,28 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         String authorizationHeader = req.getHeader(environment.getProperty("authorization.token.header.name"));
 
         if (authorizationHeader == null) {
-            return null;
+            throw new InsufficientAuthenticationException("Authorization header is missing");
         }
 
         String token = authorizationHeader.replace(environment.getProperty("authorization.token.header.prefix"), "");
         String tokenSecret = environment.getProperty("token.secret");
 
         if (tokenSecret == null) {
-            return null;
+            throw new InternalAuthenticationServiceException("Token secret is not configured on the server");
         }
 
-        JwtClaimsParser jwtClaimsParser = new JwtClaimsParser(token, tokenSecret);
-        String userId = jwtClaimsParser.getJwtSubject();
+        try {
 
-        if (userId == null) {
-            return null;
+            JwtClaimsParser jwtClaimsParser = new JwtClaimsParser(token, tokenSecret);
+            String userId = jwtClaimsParser.getJwtSubject();
+
+            if (userId == null) {
+                throw new BadCredentialsException("Invalid token: User ID not found in claims");
+            }
+
+            return new UsernamePasswordAuthenticationToken(userId, null, jwtClaimsParser.getUserAuthorities());
+        } catch (Exception e) {
+            throw new BadCredentialsException("Token validation failed: " + e.getMessage());
         }
-
-        return new UsernamePasswordAuthenticationToken(userId, null, jwtClaimsParser.getUserAuthorities());
     }
 }
