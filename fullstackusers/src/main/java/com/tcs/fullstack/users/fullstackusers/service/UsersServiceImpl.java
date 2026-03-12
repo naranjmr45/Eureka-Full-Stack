@@ -9,6 +9,8 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -170,15 +172,12 @@ public class UsersServiceImpl implements UsersService {
 	}
 
     @Override
-    public List<UserDto> getAllUsers() {
-        List<UserEntity> userEntities = new ArrayList<>();
-        List<UserDto> users = new ArrayList<>();
-        usersRepository.findAll().forEach(userEntities::add);
+    public Page<UserDto> getAllUsers(Pageable pageable) {
+        Page<UserEntity> userEntities = usersRepository.findAll(pageable);
 
-        for (int i = 0; i < userEntities.size(); i++) {
-            users.add(new ModelMapper().map(userEntities.get(i), UserDto.class));
-        }
-        return users;
+        ModelMapper modelMapper = new ModelMapper();
+
+        return userEntities.map(entity -> modelMapper.map(entity, UserDto.class));
     }
 
     @Override

@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,16 +72,13 @@ public class UsersController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<CreateUserResponseModel>> getAllUsers() {
+    public ResponseEntity<Page<CreateUserResponseModel>> getAllUsers(Pageable pageable) {
 
         ModelMapper modelMapper = new ModelMapper();
 
-        List<UserDto> userList = usersService.getAllUsers();
-        List<CreateUserResponseModel> returnValue = new ArrayList<>();
+        Page<UserDto> userPage = usersService.getAllUsers(pageable);
 
-        for (int i = 0; i < userList.size(); i++) {
-            returnValue.add(modelMapper.map(userList.get(i), CreateUserResponseModel.class));
-        }
+        Page<CreateUserResponseModel> returnValue = userPage.map(dto -> modelMapper.map(dto, CreateUserResponseModel.class));
         
         return ResponseEntity.status(HttpStatus.OK).body(returnValue);
     }

@@ -2,6 +2,8 @@ package com.tcs.fullstack.users.fullstackusers.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.tcs.fullstack.users.fullstackusers.shared.UserDto;
@@ -11,7 +13,7 @@ public interface UsersService extends UserDetailsService {
     UserDto getUserDetailsByEmail(String email);
     UserDto updateUser(UserDto userDetails);
     UserDto deleteUserByEmail(String email);
-    List<UserDto> getAllUsers();
+    Page<UserDto> getAllUsers(Pageable pageable);
     UserDto createAdmin(UserDto userDetails);
     UserDto getUserDetailsByUserId(String userId);
 }
