@@ -8,6 +8,7 @@ export const useUserStore = defineStore('user', () => {
     const isLoading = ref(false)
     const searchQuery = ref('')
     const users = ref([])
+    const totalPages = ref('');
 
     const filteredUsers = computed(() => {
         if (!searchQuery.value) return users.value;
@@ -75,7 +76,9 @@ export const useUserStore = defineStore('user', () => {
             }
 
             // Use .text() since your Java backend returns a plain String
-            users.value = response.data;
+            console.log(response.data)
+            totalPages.value = response.data.totalPages;
+            users.value = response.data.content;
 
         } catch (error) {
             console.error("Error connecting to Spring Boot:", error);
@@ -124,6 +127,7 @@ export const useUserStore = defineStore('user', () => {
         searchQuery,
         users,
         filteredUsers,
+        totalPages,
         updateUser,
         deleteUser,
         findByEmail,
