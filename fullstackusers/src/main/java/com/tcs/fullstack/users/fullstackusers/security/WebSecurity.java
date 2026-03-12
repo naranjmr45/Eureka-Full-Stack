@@ -54,6 +54,7 @@ public class WebSecurity {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests((authz) -> authz
+                .requestMatchers("/error").permitAll()
                 .requestMatchers("/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .requestMatchers("/users/**").authenticated())

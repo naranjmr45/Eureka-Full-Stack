@@ -51,8 +51,15 @@ export const useUserStore = defineStore('user', () => {
             const data = await response.data;
             statusMessage.value = data;
         } catch (error) {
-            statusMessage.value = error
-            console.error("Error connecting to Spring Boot:", error);
+            // Check if the server actually sent a response body
+            if (error.response && error.response.data) {
+                // This maps to the 'message' key in your Spring Map
+                statusMessage.value = error + ": " +  error.response.data.message;
+            } else {
+                // Fallback for network errors or no response
+                statusMessage.value = "An unexpected error occurred.";
+            }
+            console.error("Error connecting to Spring Boot:", error.response);
         } finally {
             isLoading.value = false
         }

@@ -1,10 +1,6 @@
 package com.tcs.fullstack.users.fullstackusers.security;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-
-import javax.crypto.SecretKey;
 
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +37,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         if (authorizationHeader == null
                 || !authorizationHeader.startsWith(environment.getProperty("authorization.token.header.prefix"))) {
             chain.doFilter(req, res);
-            return;
+            throw new InsufficientAuthenticationException("Authorization header is missing");
         }
 
         UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
