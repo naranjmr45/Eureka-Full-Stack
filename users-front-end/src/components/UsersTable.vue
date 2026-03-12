@@ -2,7 +2,7 @@
     <div v-if="authStore.isLoggedIn" id="userTable">
         <div class="ui menu">
             <div class="item">
-                <a @click="userStore.getUsers" class="ui button" :class="{ 'loading': userStore.isLoading }">
+                <a @click="userStore.getUsers(0)" class="ui button" :class="{ 'loading': userStore.isLoading }">
                     Get All Users
                 </a>
             </div>
@@ -36,6 +36,28 @@
                 </tbody>
 
             </table>
+
+            <div class="ui pagination menu" v-if="userStore.totalPages > 1">
+                <a class="item" 
+                :class="{ 'disabled': userStore.currentPage === 0 }" 
+                @click="userStore.getUsers(userStore.currentPage - 1)">
+                    Previous
+                </a>
+
+                <a v-for="pageIndex in userStore.totalPages" 
+                :key="pageIndex" 
+                class="item" 
+                :class="{'active': userStore.currentPage === (pageIndex - 1)}" @click="userStore.getUsers(pageIndex - 1)">
+                    {{ pageIndex }}
+                </a>
+
+                <a class="item" 
+                :class="{ 'disabled': userStore.currentPage === userStore.totalPages - 1 }" 
+                @click="userStore.getUsers(userStore.currentPage + 1)">
+                    Next
+                </a>
+
+            </div>
         </div>
     </div>
 </template>

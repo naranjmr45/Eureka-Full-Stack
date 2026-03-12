@@ -8,7 +8,8 @@ export const useUserStore = defineStore('user', () => {
     const isLoading = ref(false)
     const searchQuery = ref('')
     const users = ref([])
-    const totalPages = ref('');
+    const totalPages = ref(0);
+    const currentPage = ref(0);
 
     const filteredUsers = computed(() => {
         if (!searchQuery.value) return users.value;
@@ -66,9 +67,9 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
-    const getUsers = async () => {
+    const getUsers = async (page = 0) => {
         try {
-            const response = await api.get(`/users-ws/users`);
+            const response = await api.get(`/users-ws/users?page=${page}`);
 
             if (response.status != 200) {
                 users.value = response.status + " error"
@@ -79,6 +80,7 @@ export const useUserStore = defineStore('user', () => {
             console.log(response.data)
             totalPages.value = response.data.totalPages;
             users.value = response.data.content;
+            currentPage.value = response.data.number;
 
         } catch (error) {
             console.error("Error connecting to Spring Boot:", error);
@@ -128,6 +130,7 @@ export const useUserStore = defineStore('user', () => {
         users,
         filteredUsers,
         totalPages,
+        currentPage,
         updateUser,
         deleteUser,
         findByEmail,
