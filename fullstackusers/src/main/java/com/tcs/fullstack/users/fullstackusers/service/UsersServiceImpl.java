@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.tcs.fullstack.users.fullstackusers.data.AuthorityEntity;
 import com.tcs.fullstack.users.fullstackusers.data.AuthorityRepository;
+import com.tcs.fullstack.users.fullstackusers.data.ItemsServiceClient;
 import com.tcs.fullstack.users.fullstackusers.data.RoleEntity;
 import com.tcs.fullstack.users.fullstackusers.data.RoleRepository;
 import com.tcs.fullstack.users.fullstackusers.data.UserEntity;
@@ -48,15 +49,15 @@ public class UsersServiceImpl implements UsersService {
 
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    RestTemplate restTemplate;
+    ItemsServiceClient itemsServiceClient;
 
     @Autowired
     public UsersServiceImpl(UsersRepository usersRepository,
             BCryptPasswordEncoder bCryptPasswordEncode,
-            RestTemplate restTemplate) {
+            ItemsServiceClient itemsServiceClient) {
         this.usersRepository = usersRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncode;
-        this.restTemplate = restTemplate;
+        this.itemsServiceClient = itemsServiceClient;
     }
 
     @Override
@@ -179,10 +180,12 @@ public class UsersServiceImpl implements UsersService {
 
         UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 
-        String itemsUrl = String.format("http://ITEMS-WS/users/%s/items", userId);
+        // String itemsUrl = String.format("http://ITEMS-WS/users/%s/items", userId);
 
-        ResponseEntity<List<ItemResponseModel>> itemsListResponse = restTemplate.exchange(itemsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<ItemResponseModel>>() {});
-        List<ItemResponseModel> itemList = itemsListResponse.getBody();
+        // ResponseEntity<List<ItemResponseModel>> itemsListResponse = restTemplate.exchange(itemsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<ItemResponseModel>>() {});
+        // List<ItemResponseModel> itemList = itemsListResponse.getBody();
+
+        List<ItemResponseModel> itemList = itemsServiceClient.getItems(userId);
 
         userDto.setItems(itemList);
 
