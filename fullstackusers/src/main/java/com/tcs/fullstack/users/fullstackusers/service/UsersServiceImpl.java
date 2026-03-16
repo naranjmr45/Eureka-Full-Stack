@@ -9,15 +9,19 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.tcs.fullstack.users.fullstackusers.data.AuthorityEntity;
 import com.tcs.fullstack.users.fullstackusers.data.AuthorityRepository;
@@ -27,6 +31,7 @@ import com.tcs.fullstack.users.fullstackusers.data.UserEntity;
 import com.tcs.fullstack.users.fullstackusers.data.UsersRepository;
 import com.tcs.fullstack.users.fullstackusers.shared.Roles;
 import com.tcs.fullstack.users.fullstackusers.shared.UserDto;
+import com.tcs.fullstack.users.fullstackusers.ui.model.ItemResponseModel;
 
 import jakarta.transaction.Transactional;
 
@@ -43,11 +48,15 @@ public class UsersServiceImpl implements UsersService {
 
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    RestTemplate restTemplate;
+
     @Autowired
     public UsersServiceImpl(UsersRepository usersRepository,
-            BCryptPasswordEncoder bCryptPasswordEncode) {
+            BCryptPasswordEncoder bCryptPasswordEncode,
+            RestTemplate restTemplate) {
         this.usersRepository = usersRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncode;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -168,7 +177,16 @@ public class UsersServiceImpl implements UsersService {
             throw new UsernameNotFoundException(userId);
         }
 
-        return new ModelMapper().map(userEntity, UserDto.class);
+        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+
+        String itemsUrl = String.format("http://ITEMS-WS/users/%s/items", userId);
+
+        ResponseEntity<List<ItemResponseModel>> itemsListResponse = restTemplate.exchange(itemsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<ItemResponseModel>>() {});
+        List<ItemResponseModel> itemList = itemsListResponse.getBody();
+
+        userDto.setItems(itemList);
+
+        return userDto;
 	}
 
     @Override

@@ -1,6 +1,9 @@
 package com.tcs.fullstack.users.fullstackusers.shared;
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.tcs.fullstack.users.fullstackusers.ui.model.ItemResponseModel;
 
 public class UserDto implements Serializable {
 
@@ -12,6 +15,7 @@ public class UserDto implements Serializable {
     private String email;
     private String userId;
     private String encryptedPassword;
+    private List<ItemResponseModel> items;
 
     public String getFirstName() {
 
@@ -60,5 +64,13 @@ public class UserDto implements Serializable {
 
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
+    }
+
+        public List<ItemResponseModel> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemResponseModel> items) {
+        this.items = items;
     }
 }

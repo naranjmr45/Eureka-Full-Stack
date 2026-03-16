@@ -41,6 +41,16 @@
             "projectName": "jwtauthorities",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-FullstackitemsApplication<fullstackitems>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.tcs.fullstack.items.fullstackitems.FullstackitemsApplication",
+            "projectName": "fullstackitems",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

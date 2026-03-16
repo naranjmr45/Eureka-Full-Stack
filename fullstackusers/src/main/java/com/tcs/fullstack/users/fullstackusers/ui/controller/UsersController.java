@@ -1,8 +1,5 @@
 package com.tcs.fullstack.users.fullstackusers.ui.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +25,7 @@ import com.tcs.fullstack.users.fullstackusers.shared.UserDto;
 import com.tcs.fullstack.users.fullstackusers.ui.model.CreateUserRequestModel;
 import com.tcs.fullstack.users.fullstackusers.ui.model.CreateUserResponseModel;
 import com.tcs.fullstack.users.fullstackusers.ui.model.UpdateUserRequestModel;
+import com.tcs.fullstack.users.fullstackusers.ui.model.UserResponseModel;
 
 import jakarta.validation.Valid;
 
@@ -62,12 +60,12 @@ public class UsersController {
     @PreAuthorize("hasRole('ADMIN') or principal == #userId")
     //@PreAuthorize("principal == #userId")
     //@PostAuthorize("principal == returnObject.body.userId()")
-    public ResponseEntity<CreateUserResponseModel> findByUserId(@PathVariable String userId) {
+    public ResponseEntity<UserResponseModel> findByUserId(@PathVariable String userId) {
 
         ModelMapper modelMapper = new ModelMapper();
 
         UserDto userDetails = usersService.getUserDetailsByUserId(userId);
-        CreateUserResponseModel returnValue = modelMapper.map(userDetails, CreateUserResponseModel.class);
+        UserResponseModel returnValue = modelMapper.map(userDetails, UserResponseModel.class);
         
         return ResponseEntity.status(HttpStatus.OK).body(returnValue);
     }
