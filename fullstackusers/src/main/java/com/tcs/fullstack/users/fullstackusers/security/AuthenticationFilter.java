@@ -25,12 +25,12 @@ import com.tcs.fullstack.users.fullstackusers.shared.UserDto;
 import com.tcs.fullstack.users.fullstackusers.ui.model.LoginRequestModel;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 

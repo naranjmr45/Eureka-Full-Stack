@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,7 @@ import com.tcs.fullstack.users.fullstackusers.shared.Roles;
 import com.tcs.fullstack.users.fullstackusers.shared.UserDto;
 import com.tcs.fullstack.users.fullstackusers.ui.model.ItemResponseModel;
 
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -50,6 +53,8 @@ public class UsersServiceImpl implements UsersService {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     ItemsServiceClient itemsServiceClient;
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UsersServiceImpl(UsersRepository usersRepository,

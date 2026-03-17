@@ -11,7 +11,7 @@ import com.tcs.fullstack.users.fullstackusers.ui.model.ItemResponseModel;
 @FeignClient(name="items-ws")
 public interface ItemsServiceClient {
 
-    @GetMapping("/users/{id}/items")
+    @GetMapping("/users/{id}/itemss")
     public List<ItemResponseModel> getItems(@PathVariable String id);
 
 }

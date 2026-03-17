@@ -9,6 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
+import com.tcs.fullstack.users.fullstackusers.shared.FeignErrorDecoder;
+
+import feign.Logger;
+
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
@@ -27,6 +31,16 @@ public class FullstackusersApplication {
 	@LoadBalanced
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
+	}
+
+	@Bean
+	Logger.Level feignLoggerLevel() {
+		return Logger.Level.FULL;
+	}
+
+	@Bean
+	public FeignErrorDecoder getFeignErrorDecoder() {
+		return new FeignErrorDecoder();
 	}
 
 }
