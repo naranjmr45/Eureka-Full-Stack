@@ -1,0 +1,13 @@
+scp -i ../awsKey/eureka-fullstack.pem eureka-server.tar ec2-user@3.134.76.254:/home/ec2-user/
+scp -i ../awsKey/eureka-fullstack.pem eureka-server.tar ec2-user@ec2-3-134-76-254.us-east-2.compute.amazonaws.com:~/
+
+sudo docker load -i ~/eureka-server.tar
+
+docker run -d -p 8761:8761 -p 8010:8010 --name eureka-server ecd64862872a
+
+ssh -i your-key.pem ec2-user@your-ec2-ip
+docker load -i /home/ec2-user/eureka-server.tar
+
+
+docker run -d -p 8761:8761 --name my-eureka eureka-server:latest
+
