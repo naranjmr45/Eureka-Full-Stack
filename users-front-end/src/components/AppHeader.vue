@@ -11,8 +11,8 @@
             {{ userStore.statusMessage }}
         </div>
 
-        <div>
-            {{ errorStore.errorMessage}} : {{errorStore.errorCode}}
+        <div class="item" v-if="errorStore.errorMessage != null">
+            {{ errorStore.getError }}
         </div>
 
         <div v-if="authStore.isLoggedIn" class="right menu">

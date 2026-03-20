@@ -16,6 +16,7 @@ const decodeJwt = (token) => {
 
 export const useAuth = defineStore('auth', () => {
     const token = ref(localStorage.getItem('user-token') || '')
+    const errorStore = useError();
 
     const payload = computed(() => {
         if (!token.value) return null;
@@ -45,10 +46,10 @@ export const useAuth = defineStore('auth', () => {
                 console.log(response.status);
                 return;
             }
-            console.log("Sign up worked: ", response.data)
+            errorStore.setError("Sign Up Worked! Please Login.", response.status)
         } catch (error) {
             console.error("Sign Up Failed", error);
-            alert("Sign Up Failed", error);
+            errorStore.setError("Sign Up failed: " + error.response.data.message, error.response.status)
         }
     }
 
@@ -64,6 +65,7 @@ export const useAuth = defineStore('auth', () => {
             if (receivedToken) {
                 token.value = receivedToken;
                 localStorage.setItem('user-token', receivedToken)
+                errorStore.clearError();
             } else {
                 console.warn("Response received, but 'token' header was missing.");
                 token.value = 'error-no-token-header';
@@ -71,8 +73,7 @@ export const useAuth = defineStore('auth', () => {
         } catch (error) {
             console.error("Login failed", error);
             token.value = 'error-network';
-            const errorStore = useError();
-            errorStore.setError(error.response.data.message, error.response.status)
+            errorStore.setError("Login failed: " + error.response.data.message, error.response.status)
         }
     }
 
