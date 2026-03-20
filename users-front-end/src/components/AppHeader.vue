@@ -10,7 +10,9 @@
             </a>
             {{ userStore.statusMessage }}
         </div>
+
         <div>
+            {{ errorStore.errorMessage}} : {{errorStore.errorCode}}
         </div>
 
         <div v-if="authStore.isLoggedIn" class="right menu">
@@ -26,9 +28,11 @@
 <script setup>
 import { useUserStore } from '@/store/useUserStore';
 import { useAuth } from '@/store/auth';
+import { useError } from '@/store/error';
 
 const userStore = useUserStore();
 const authStore = useAuth();
+const errorStore = useError();
 
 // This handles the UI event and passes the data to Pinia
 

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import api from '@/api'
+import { useError } from './error';
 
 const decodeJwt = (token) => {
   try {
@@ -70,7 +71,8 @@ export const useAuth = defineStore('auth', () => {
         } catch (error) {
             console.error("Login failed", error);
             token.value = 'error-network';
-            alert("Login Failed" + error)
+            const errorStore = useError();
+            errorStore.setError(error.response.data.message, error.response.status)
         }
     }
 
