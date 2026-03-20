@@ -10,6 +10,8 @@
             </a>
             {{ userStore.statusMessage }}
         </div>
+        <div>
+        </div>
 
         <div v-if="authStore.isLoggedIn" class="right menu">
             <div class="item">
