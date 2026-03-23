@@ -46,10 +46,10 @@ export const useAuth = defineStore('auth', () => {
                 console.log(response.status);
                 return;
             }
-            errorStore.setError("Sign Up Worked! Please Login.", response.status)
+            errorStore.setError("Sign Up Worked! Please Login.", 204)
         } catch (error) {
             console.error("Sign Up Failed", error);
-            errorStore.setError("Sign Up failed: " + error.response.data.message, error.response.status)
+            errorStore.setError("Sign Up failed: " + error.response.error, error.response.status)
         }
     }
 

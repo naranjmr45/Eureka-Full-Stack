@@ -85,9 +85,9 @@ public class UsersServiceImpl implements UsersService {
 
         userEntity.setRoles(Arrays.asList(roleUser));
 
-        usersRepository.save(userEntity);
+        UserEntity storedUserDetails = usersRepository.save(userEntity);
 
-        UserDto returnValue = modelMapper.map(userEntity, UserDto.class);
+        UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
 
         return returnValue;
     }
