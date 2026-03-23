@@ -86,7 +86,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .issuedAt(Date.from(now))
                 .signWith(secretKey)
                 .compact();
-
+        System.out.print(Long.parseLong(environment.getProperty("token.expiration_time")));            
         res.addHeader("token", token);
         res.addHeader("userId", userDetails.getUserId());
     }
