@@ -19,6 +19,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import reactor.core.publisher.Mono;
 
+/**
+ * This class will create a filter for our routes that checks if the request has
+ * a valid header and value pair as well as a valid jwt access token.
+ */
 @Component
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
 
@@ -33,6 +37,17 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     }
 
+    /**
+     * A overrided method that will actually make and apply the filter to our
+     * routes. The filter will check if the 'Authorization' Header and 'Bearer
+     * JWT_Value' Value are present and valid.
+     * 
+     * @param config The configuartions to hold the parameters of the filter. We
+     *               need to pass a config parameter to run this method even if we
+     *               have no configuartions so it can be blank and unused.
+     * 
+     * @return A Gateway Filter to apply to our routes.
+     */
     @Override
     public GatewayFilter apply(Config config) {
 
@@ -63,6 +78,14 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         return response.setComplete();
     }
 
+    /**
+     * A helper method to check if the jwt access token is valid with the client
+     * attempting to use the application. We check against the tokenSecret value we
+     * have in application.properties.
+     * 
+     * @param jwt The JSON Web Token
+     * @return True if valid, False if Invalid
+     */
     private boolean isJwtValid(String jwt) {
         try {
             String tokenSecret = env.getProperty("token.secret");
