@@ -1,5 +1,8 @@
 package com.tcs.fullstack.users.fullstackusers.ui.model;
 
+/**
+ * A model for creating a User Response with appropriate getters and setters.
+ */
 public class CreateUserResponseModel {
 
     private String firstName;

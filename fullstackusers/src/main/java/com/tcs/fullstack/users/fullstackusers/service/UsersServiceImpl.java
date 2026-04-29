@@ -39,6 +39,10 @@ import com.tcs.fullstack.users.fullstackusers.ui.model.ItemResponseModel;
 import feign.FeignException;
 import jakarta.transaction.Transactional;
 
+/**
+ * A class that implements the UsersService interface and handles the
+ * implementations of the database operations for the users microservice.
+ */
 @Service
 public class UsersServiceImpl implements UsersService {
 
@@ -56,6 +60,15 @@ public class UsersServiceImpl implements UsersService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * A constructor that gets the usersRepository, bCryptPasswordEncoder, and
+     * itemsServiceClient via constructor dependecy injection.
+     * 
+     * @param usersRepository      The jpa repository for the users microservice.
+     * @param bCryptPasswordEncode An encryption component for the user passwords.
+     * @param itemsServiceClient   A component used to reference the items
+     *                             microservice.
+     */
     @Autowired
     public UsersServiceImpl(UsersRepository usersRepository,
             BCryptPasswordEncoder bCryptPasswordEncode,
@@ -65,6 +78,7 @@ public class UsersServiceImpl implements UsersService {
         this.itemsServiceClient = itemsServiceClient;
     }
 
+    
     @Override
     public UserDto createUser(UserDto userDetails) {
 
@@ -98,7 +112,6 @@ public class UsersServiceImpl implements UsersService {
         userDetails.setUserId(UUID.randomUUID().toString());
         userDetails.setEncryptedPassword(
                 bCryptPasswordEncoder.encode(userDetails.getPassword()));
-        
 
         ModelMapper modelMapper = new ModelMapper();
 
@@ -110,7 +123,8 @@ public class UsersServiceImpl implements UsersService {
         AuthorityEntity writeAuthority = createAuthority("WRITE");
         AuthorityEntity deleteAuthority = createAuthority("DELETE");
 
-        RoleEntity roleAdmin = createRole(Roles.ROLE_ADMIN.name(), Arrays.asList(readAuthority, writeAuthority, deleteAuthority));
+        RoleEntity roleAdmin = createRole(Roles.ROLE_ADMIN.name(),
+                Arrays.asList(readAuthority, writeAuthority, deleteAuthority));
 
         userEntity.setRoles(Arrays.asList(roleAdmin));
 
@@ -160,7 +174,7 @@ public class UsersServiceImpl implements UsersService {
         });
 
         return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(),
-                true, true, true, true, 
+                true, true, true, true,
                 authorities);
     }
 
@@ -176,8 +190,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-	public UserDto getUserDetailsByUserId(String userId) {
-		UserEntity userEntity = usersRepository.findByUserId(userId);
+    public UserDto getUserDetailsByUserId(String userId) {
+        UserEntity userEntity = usersRepository.findByUserId(userId);
 
         if (userEntity == null) {
             throw new UsernameNotFoundException(userId);
@@ -187,7 +201,9 @@ public class UsersServiceImpl implements UsersService {
 
         // String itemsUrl = String.format("http://ITEMS-WS/users/%s/items", userId);
 
-        // ResponseEntity<List<ItemResponseModel>> itemsListResponse = restTemplate.exchange(itemsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<ItemResponseModel>>() {});
+        // ResponseEntity<List<ItemResponseModel>> itemsListResponse =
+        // restTemplate.exchange(itemsUrl, HttpMethod.GET, null, new
+        // ParameterizedTypeReference<List<ItemResponseModel>>() {});
         // List<ItemResponseModel> itemList = itemsListResponse.getBody();
 
         List<ItemResponseModel> itemList = itemsServiceClient.getItems(userId);
@@ -195,7 +211,7 @@ public class UsersServiceImpl implements UsersService {
         userDto.setItems(itemList);
 
         return userDto;
-	}
+    }
 
     @Override
     public Page<UserDto> getAllUsers(Pageable pageable) {
@@ -224,7 +240,7 @@ public class UsersServiceImpl implements UsersService {
 
         AuthorityEntity authority = authorityRepository.findByName(name);
 
-        if(authority == null) {
+        if (authority == null) {
             authority = new AuthorityEntity(name);
             authorityRepository.save(authority);
         }
@@ -237,7 +253,7 @@ public class UsersServiceImpl implements UsersService {
 
         RoleEntity role = roleRepository.findByName(name);
 
-        if(role == null) {
+        if (role == null) {
             role = new RoleEntity(name, authorities);
             roleRepository.save(role);
         }
