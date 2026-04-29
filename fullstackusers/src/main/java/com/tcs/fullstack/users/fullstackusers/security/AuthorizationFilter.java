@@ -22,11 +22,17 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     private Environment environment;
 
+    /**
+     * 
+     * @param authenticationManager
+     * @param environment
+     */
     public AuthorizationFilter(AuthenticationManager authenticationManager, Environment environment) {
         super(authenticationManager);
         this.environment = environment;
     }
 
+    
     @Override
     protected void doFilterInternal(HttpServletRequest req,
             HttpServletResponse res, FilterChain chain)
@@ -46,6 +52,11 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         chain.doFilter(req, res);
     }
 
+    /**
+     * 
+     * @param req
+     * @return
+     */
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest req) {
         String authorizationHeader = req.getHeader(environment.getProperty("authorization.token.header.name"));
 

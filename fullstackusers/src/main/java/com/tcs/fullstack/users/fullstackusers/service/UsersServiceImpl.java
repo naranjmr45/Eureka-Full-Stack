@@ -11,11 +11,8 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -23,7 +20,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.tcs.fullstack.users.fullstackusers.data.AuthorityEntity;
 import com.tcs.fullstack.users.fullstackusers.data.AuthorityRepository;
@@ -36,7 +32,6 @@ import com.tcs.fullstack.users.fullstackusers.shared.Roles;
 import com.tcs.fullstack.users.fullstackusers.shared.UserDto;
 import com.tcs.fullstack.users.fullstackusers.ui.model.ItemResponseModel;
 
-import feign.FeignException;
 import jakarta.transaction.Transactional;
 
 /**
@@ -78,7 +73,19 @@ public class UsersServiceImpl implements UsersService {
         this.itemsServiceClient = itemsServiceClient;
     }
 
-    
+    /**
+     * A helper method to create a new user into the users jpa repository and sqlite
+     * database if the user doesn't already exist. The client will provide the user
+     * details. The method will generate a unique user id and unique encrypted
+     * password for each new user. Each new user will also be give Read and Write
+     * access to specific request in the database as the 'User' role.
+     * 
+     * @param userDetails The client will provide a valid first name, last name,
+     *                    password, and email as part of the request.
+     * @return UserDto A data transfer object for the users microservice to send
+     *         transfer information back to the controller class to be mapped to the
+     *         response model.
+     */
     @Override
     public UserDto createUser(UserDto userDetails) {
 
@@ -106,6 +113,20 @@ public class UsersServiceImpl implements UsersService {
         return returnValue;
     }
 
+    /**
+     * A helper method to create a new user with admin privalges into the users jpa
+     * repository and sqlite database if the user doesn't already exist. The client
+     * will provide the user details. The method will generate a unique user id and
+     * unique encrypted password for each new user. Each new admin will also be give
+     * Read, Write, and Delete access to all requests in the database as the 'Admin'
+     * role.
+     * 
+     * @param userDetails The client will provide a valid first name, last name,
+     *                    password, and email as part of the request.
+     * @return UserDto A data transfer object for the users microservice to send
+     *         transfer information back to the controller class to be mapped to the
+     *         response model.
+     */
     @Override
     public UserDto createAdmin(UserDto userDetails) {
 
@@ -135,6 +156,16 @@ public class UsersServiceImpl implements UsersService {
         return returnValue;
     }
 
+    /**
+     * A helper method to update an existing user in the database. Only the first
+     * name, last name, and email can be changed.
+     * 
+     * @param userDetails The client will provide a valid first name, last name,
+     *                    password, and email as part of the request.
+     * @return UserDto A data transfer object for the users microservice to send
+     *         transfer information back to the controller class to be mapped to the
+     *         response model.
+     */
     @Override
     public UserDto updateUser(UserDto userDetails) {
         UserEntity userEntity = usersRepository.findByUserId(userDetails.getUserId());
@@ -154,6 +185,11 @@ public class UsersServiceImpl implements UsersService {
         return returnValue;
     }
 
+    /**
+     * @param username
+     * @return UserDetails
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = usersRepository.findByEmail(username);
@@ -178,6 +214,10 @@ public class UsersServiceImpl implements UsersService {
                 authorities);
     }
 
+    /**
+     * @param email
+     * @return UserDto
+     */
     @Override
     public UserDto getUserDetailsByEmail(String email) {
         UserEntity userEntity = usersRepository.findByEmail(email);
@@ -189,6 +229,10 @@ public class UsersServiceImpl implements UsersService {
         return new ModelMapper().map(userEntity, UserDto.class);
     }
 
+    /**
+     * @param userId
+     * @return UserDto
+     */
     @Override
     public UserDto getUserDetailsByUserId(String userId) {
         UserEntity userEntity = usersRepository.findByUserId(userId);
@@ -213,6 +257,10 @@ public class UsersServiceImpl implements UsersService {
         return userDto;
     }
 
+    /**
+     * @param pageable
+     * @return Page<UserDto>
+     */
     @Override
     public Page<UserDto> getAllUsers(Pageable pageable) {
         Page<UserEntity> userEntities = usersRepository.findAll(pageable);
@@ -222,6 +270,10 @@ public class UsersServiceImpl implements UsersService {
         return userEntities.map(entity -> modelMapper.map(entity, UserDto.class));
     }
 
+    /**
+     * @param email
+     * @return UserDto
+     */
     @Override
     public UserDto deleteUserByEmail(String email) {
         UserEntity userEntity = usersRepository.findByEmail(email);
@@ -235,6 +287,10 @@ public class UsersServiceImpl implements UsersService {
         return new ModelMapper().map(userEntity, UserDto.class);
     }
 
+    /**
+     * @param name
+     * @return AuthorityEntity
+     */
     @Transactional
     private AuthorityEntity createAuthority(String name) {
 
@@ -248,6 +304,11 @@ public class UsersServiceImpl implements UsersService {
         return authority;
     }
 
+    /**
+     * @param name
+     * @param authorities
+     * @return RoleEntity
+     */
     @Transactional
     private RoleEntity createRole(String name, Collection<AuthorityEntity> authorities) {
 
